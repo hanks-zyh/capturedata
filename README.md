@@ -29,7 +29,6 @@ tar zxvf charles-proxy-3.11.2.tar.gz
 ./charles/bin/charles
 ```
 
-
 ## 手机抓包
 
 **前提：使手机和电脑在一个局域网内，不一定非要是一个ip段，只要是同一个路由下就可以了，比如电脑连接的有线网ip为192.168.16.12，然后手机链接的wifi ip为192.168.1.103，但是这个有线网和无线网的最终都是来自于一个外部ip，这样的话也是可以的。**
@@ -41,14 +40,24 @@ tar zxvf charles-proxy-3.11.2.tar.gz
 
 设置好之后Charles弹出确认框，点击Allow按钮即可
 
+ ![图片](https://dn-coding-net-production-pp.qbox.me/ad193bbb-4d55-4feb-9e55-0634aa6dbfce.png) 
+
+ ![图片](https://dn-coding-net-production-pp.qbox.me/c48ee820-f6ae-4814-b505-ff4870db1f5b.png) 
+
+
+
 ## 抓取 https
 
+ ![图片](https://dn-coding-net-production-pp.qbox.me/027d34d1-c783-4aca-8db3-e0066bf4ca1b.png) 
+ 
 ### 安装证书
 charles的 Help -> SSL Proxy -> Install charles Root
 
 ### 设置 ssl enable
 
 在需要抓取的 https 链接上 右键 `enable ssl proxy`
+![图片](https://dn-coding-net-production-pp.qbox.me/4b91cf2a-e35b-4b9b-96ac-047eafe607e6.png) 
+
 
 
 参考 [charles使用教程指南](http://drops.wooyun.org/tips/2423)
