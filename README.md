@@ -12,7 +12,6 @@ tools to capture network data  抓包工具总结
 
 >Charles is an HTTP proxy / HTTP monitor / Reverse Proxy that enables a developer to view all of the HTTP and SSL / HTTPS traffic between their machine and the Internet. This includes requests, responses and the HTTP headers (which contain the cookies and caching information).
 
-
 ![](https://www.charlesproxy.com/assets/img/sm/23/image/mac_screen_321.png?k=f28bf8eff3)
 
 ----
@@ -53,6 +52,7 @@ charles的 Help -> SSL Proxy -> Install charles Root
 
 
 参考 [charles使用教程指南](http://drops.wooyun.org/tips/2423)
+
 
 
 
@@ -146,31 +146,25 @@ mitmproxy条件拦截效果
 这些橘黄色的数据包都代表被拦截了，还未发送给服务器，这个时候你就可以对这些数据包进行修改，我们选择一个数据包enter进入：
 
 mitmproxy 拦截 选择数据包
-mitmproxy 拦截 选择数据包
 与之前的类似，输入“e”，进行request编辑模式，然后输入“h”代表要编辑request的头部:
 
-mitmproxy 编辑拦截包的头部
 mitmproxy 编辑拦截包的头部
 输入enter便可对高亮的User-Agent的值进行修改，上图的weibo版本之前是5.0的，被我改成了6.0 。我们还可以对header进行添加属性，输入“a”即可，然后使用tab分别键入key和value。这里我添加了“test－test”键值对：
 
 mitmproxy 拦截header添加键值对
-mitmproxy 拦截header添加键值对
 至此，我对拦截的request header已经修改完毕，现在要做的就是我要认可接受这个修改，然后发给服务器。所以我们输入“a”（代表“accept”）即可，等到服务器响应后，注意，mitmproxy便又了拦截服务器发过来的response（注意那个“Response intercepted”）：
 
-mitmproxy 拦截response
 mitmproxy 拦截response
 现在如果你想修改这个response也可以，方式同上面修改request一样。这个时候我再输入“a”，代表我接受了这个response，然后这个response便可发给客户端了:
 
 mitmproxy 拦截response之后accept
-mitmproxy 拦截response之后accept
-
 
 更多类型的mitmproxy拦截
 
 同时mitmproxy还支持不同类型的条件过滤，之前在拦截字符串前面加上特定的参数比如我要拦截所有的POST request怎么办？输入：~m POST 即可（m代表method）：
 
 mitmproxy 拦截特定的request 方法
-mitmproxy 拦截特定的request 方法
+
 拦截所有的request： ~q
 
 拦截特定的header： ~h
@@ -181,6 +175,7 @@ mitmproxy 拦截特定的request 方法
 
 mitmproxy官方文档。
 
+-----
 
 
 # 抓包工具 -- Fiddler
@@ -193,6 +188,9 @@ mitmproxy官方文档。
 
 ## 手机抓包
 ![](https://imququ.com/static/uploads/2013/09/Snip20130913_20.png.webp)
+
+
+----
 
 # 抓包工具 -- wireshark
 
