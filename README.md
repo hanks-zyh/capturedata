@@ -86,7 +86,7 @@ charles的 Help -> SSL Proxy -> Install charles Root
 $ sudo pip install mitmproxy
 
 ```
-如果下载速度慢可以下载[tar包](https://mitmproxy.org/download/mitmproxy-0.14.0.tar.gz)
+如果下载速度慢可以下载[tar包](https://mitmproxy.org/download/mitmproxy-0.14.0.tar.gz),需要netlib依赖， ** 推荐用pip 安装 **
 
 ## 启动
 
