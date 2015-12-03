@@ -1,0 +1,179 @@
+package com.hanks.csdnblog;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.watij.webspec.dsl.Tag;
+import org.watij.webspec.dsl.WebSpec;
+
+public class CSDNBlog {
+
+
+	public static void main(String[] args) throws IOException, ParseException {
+	 
+
+		String username = "xxxxxxxxxxxxxxxxxxx"; //用户名
+		String password = "xxxxxxxxxxxxxxxx";  // 密码
+		String nickname = "xxxxxxxxxxxxxxxxxxxx"; // 就是url中显示的 如http://blog.csdn.net/hanks 中的 hanks
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdfShort = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdfUrl = new SimpleDateFormat("/yyyy/MM/dd/");
+		
+		String loginUrl = "https://passport.csdn.net/account/login?ref=toolbar";
+
+		// 当获取文章列表的页码大于你的最大页码时，csdn会返回你全部的文章，这里设置为9999，一般不会有这么多文章的用户
+		String articlListUrl = "http://blog.csdn.net/" + nickname + "/article/list/9999";
+		
+		String editMarkdownUrl = "http://write.blog.csdn.net/mdeditor#!postId=";
+		String editRichTextUrl = "http://write.blog.csdn.net/postedit/";
+		
+		String fileDir = "C:\\Users\\hanks\\Desktop\\bbb\\"; //存放生成文件的路径
+	
+		// WebSpec.silent_mode = true;
+		WebSpec client = new WebSpec().ie();
+		client.open(loginUrl);
+		
+		// 登录，为了能编辑文章内容
+		Tag usernameTag = client.findWithId("username");
+		usernameTag.set.value(username);
+		Tag passwordTag = client.findWithId("password");
+		passwordTag.set.value(password);
+		Tag login = client.jquery("input[class=logging]");
+		System.out.println(login);
+		login.click();
+
+		// 文章列表
+		ArrayList<Article> articleIdList = new ArrayList<>();
+		client.open(articlListUrl);
+		Tag edit_a = client.jquery("span[class=link_title]");
+		int lenght = edit_a.all.length();
+		System.out.println("文章个数:" + lenght);
+		
+		for (int i = 0; i < lenght; i++) {
+			
+			// 获取文章title
+			String articleTitle = edit_a.at(i).get.innerText().trim();
+			System.out.println("title:"+ articleTitle);
+			
+			// 获取文章id
+			String url = edit_a.at(i).child.a().get("href");
+			int index = url.lastIndexOf('/');
+			String articleId = url.substring(index + 1);
+			System.out.println(articleId);
+			
+			//获取日期
+			Tag dateTag = client.jquery("span[class=link_postdate]");
+			Date date = sdf.parse(dateTag.get.innerText()+":00");
+			
+		 
+			Article article = new Article();
+			article.id = articleId;
+			article.title = articleTitle;
+			article.publishDate = date;
+			article.fileName = formatFilename(articleTitle);
+			article.url =  sdfUrl.format(date)+article.fileName+"/";
+			System.out.println(article.toString());
+			articleIdList.add(article);
+		}
+
+		// 每个文章解析
+
+		for (int i = 0; i < articleIdList.size(); i++) {
+
+			Article article = articleIdList.get(i);
+			
+			String attachHead = "";
+			
+			// markdown: http://write.blog.csdn.net/mdeditor#!postId=50102915
+			String url = editMarkdownUrl + article.id;
+			System.out.println(url);
+			client.open("http://m.baidu.com");
+			client.open(url);
+			System.out.println("新的链接");
+//			client.pauseUntilReady();
+			System.out.println("ready----");
+			
+			// 文章详情
+			// 内容
+			Tag contentTag = client.findWithId("wmd-input");
+			String content = contentTag.get.innerText();
+			System.out.println(content);
+
+			boolean isRichText = false;
+
+			if ("null".equals(content)) {
+				// 富文本 http://write.blog.csdn.net/postedit/50102915
+				url = editRichTextUrl + article.id;
+				System.out.println(url);
+				client.open(url);
+//				client.pauseUntilReady();
+
+				// 内容
+				contentTag = client.findWithId("editor");
+				content = contentTag.get.innerText();
+				System.out.println(content);
+
+				isRichText = true;
+				
+				attachHead = 
+						 "<h1>" + "<a class=\"article-title\" href=\"" + article.url+ "\">" + article.title
+						+ "</a></h1>";
+				
+			}
+
+			// 保存文件
+			File file = new File( fileDir + article.fileName + (isRichText?".html":".md"));
+			if (file.exists()) {
+				file.delete();
+			}
+			file.createNewFile();
+			String br = "\r\n";
+			
+			StringBuilder b = new StringBuilder();
+			if(!isRichText){
+				b.append("title: " + article.title + br);
+				b.append("date: " + sdf.format(article.publishDate) + br);
+				b.append("---" + br + br);
+			}else{
+				b.append("title: " + article.title + br);
+				b.append("date: " + sdf.format(article.publishDate) + br);
+				b.append("---" + br + br);
+			}
+			
+			b.append(content);
+
+			writeStringToFile(file.getAbsolutePath(), b.toString());
+			
+		}
+		client.closeAll();
+	}
+
+	// 防止文件名称出现非法字符
+	private static String formatFilename(String title) {
+		String regex = "[<>/\\|:\"\"*?\\s]";
+		String result = title.replaceAll(regex, "_");
+		return result;
+	}
+
+	public static void writeStringToFile(String filePath, String appendContent) {
+		try {
+			FileWriter fw = new FileWriter(filePath, true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.append(appendContent);
+			bw.close();
+			fw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+}
