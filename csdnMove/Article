@@ -1,0 +1,19 @@
+package com.hanks.csdnblog;
+
+import java.util.Date;
+
+public class Article {
+	public String id;
+	public String fileName;
+	public String title;
+	public String url;
+	public Date publishDate;
+	
+	@Override
+	public String toString() {
+		return "Article [id=" + id + ", fileName=" + fileName + ", title=" + title + ", url=" + url + ", publishDate="
+				+ publishDate + "]";
+	}
+	
+	
+}
